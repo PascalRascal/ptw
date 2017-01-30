@@ -36,7 +36,7 @@ function MSPaintVR(options) {
 }
 
 MSPaintVR.prototype.showShare = function(){
-    this.shareDiv.innerHTML = 'View in VR: ' + window.location.href + '/view/?did=' + this.drawingId;
+    this.shareDiv.innerHTML = 'View in VR: ' + window.location.href + 'ptw/view/?did=' + this.drawingId;
 }
 MSPaintVR.prototype.init = function () {
     //Initiate Authentication and Database
