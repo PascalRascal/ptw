@@ -1,223 +1,183 @@
-<!doctype html>
 <html>
 
+<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+<script src="js/jquery-3.1.1.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="bootstrap/js/npm.js"></script>
+
 <head>
-  <title>Paint the World</title>
-  <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    // TODO: Replace with your project's customized code snippet
-    var config = {
-      apiKey: "AIzaSyBe5R-UlRrhLs1mlgTJ4X2NRXcP0dnv6_g",
-      authDomain: "mspaintvr.firebaseapp.com",
-      databaseURL: "https://mspaintvr.firebaseio.com",
-      storageBucket: "mspaintvr.appspot.com",
-      messagingSenderId: "940993919791",
-    };
-    firebase.initializeApp(config);
-  </script>
-  <link href="css/spectrum.css" rel="stylesheet">
-  <link href="css/literallycanvas.css" rel="stylesheet">
-  <script src="https://use.fontawesome.com/9e19aba51c.js"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>Paint the World</title>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        // TODO: Replace with your project's customized code snippet
+        var config = {
+            apiKey: "AIzaSyBe5R-UlRrhLs1mlgTJ4X2NRXcP0dnv6_g",
+            authDomain: "mspaintvr.firebaseapp.com",
+            databaseURL: "https://mspaintvr.firebaseio.com",
+            storageBucket: "mspaintvr.appspot.com",
+            messagingSenderId: "940993919791",
+        };
+        firebase.initializeApp(config);
+    </script>
 
-<style type="text/css">
-      body {
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        margin: 0;
-        background-color: gray;
-        height: 2000px;
-      }
-      .fs-container {
-       width: 100%;
-       margin: 50px;
-      }
-      .literally {
-        width: 100%;
-        height: 100%;
-      }
-      .literally img.background, .literally > canvas {
-        width: 60vw;
-        position: absolute;
-      }
-      .toolset {
-        padding-left: 25vw;
-        padding-right: 25vw;
-        margin: 1rem;
-      }
-      .size1 {
-        font-size: .5%;
-        padding-bottom: 4px;
-      }
-      .size2 {
-        font-size: 75%;
-        padding-bottom: 4px;
-      }
-      .size3 {
-        font-size: 100%;
-        padding-bottom: 4px;
-      }
-      .size4 {
-        font-size: 125%;
-        padding-bottom: 4px;
-      }
-      .size5 {
-        font-size: 150%;
-        padding-bottom: 4px;
-      }
+    <link href="css/spectrum.css" rel="stylesheet">
+    <link href="css/literallycanvas.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/9e19aba51c.js"></script>
+    <meta charset="UTF-8">
 
-      .tool {
-        background: hsla(199, 26%, 44%, 0.5);
-        padding: 0.5rem;
-        margin: 0.5rem;
-        border-radius: 0.5rem;
-        color: #000;
-        text-align: center;
-        text-decoration: none;
-        position: relative; 
-      }
-      .tool.current {
-        color: #fff;
-        background: hsla(199, 26%, 44%, 1);
-      }
-      .tool:hover {
-        text-decoration: underline;
-        background: hsla(199, 26%, 44%, 0.75);
-      }
-      .toolLabel {
-        font-size: 1.25rem;
-      }
-      #tools-sizes.disabled {
-        pointer-events: none;
-      }
-      #tools-sizes.disabled .tool:after {
-        content: ' ';
-        background: hsla(0, 100%, 100%, 0.75);
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border-radius: 0.25rem;
-      }
+    <style type="text/css">
+          body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: gray;
+          }
+          .size1 {
+            font-size: 50%;
+            padding-bottom: 4px;
+          }
+          .size2 {
+            font-size: 75%;
+            padding-bottom: 4px;
+          }
+          .size3 {
+            font-size: 100%;
+            padding-bottom: 4px;
+          }
+          .size4 {
+            font-size: 125%;
+            padding-bottom: 4px;
+          }
+          .size5 {
+            font-size: 150%;
+            padding-bottom: 4px;
+          }
+          .col-centered {
+            float: none;
+            margin: 0 auto;
+          }
+          .panel {
+            margin: 30 auto;
+            height: 530px;
+          }
     </style>
 </head>
 
 <body>
-  <div class="fs-container">
-    <!-- Tools! -->
-    <div class="toolset">
-      <input type='text' id="colorPicker" />
-      <i class="fa fa-undo tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-repeat tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-search-plus tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-search-minus tool toolset-icon" aria-hidden="true"></i>
-
-      <i class="fa fa-circle size1 tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-circle size2 tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-circle size3 tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-circle size4 tool toolset-icon" aria-hidden="true"></i>
-      <i class="fa fa-circle size5 tool toolset-icon" aria-hidden="true"></i>
-
-      <i class="fa fa-arrows tool" aria-hidden="true"></i>
-      <i class="fa fa-pencil tool" aria-hidden="true"></i>
-
-      <i class="fa clearDrawing tool"> CLEAR </i>
-
+    <div>    
+        <div class="panel panel-default col-centered col-sm-11">
+            <!-- Tools! -->
+            <div class="row">
+                <div class="col-xs-4 col-centered">
+                    <span class="badge"><input type='text' id="colorPicker" /></span>
+                    <span class="badge"><i class="fa fa-undo tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-repeat tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-search-plus tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-search-minus tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-circle size1 tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-circle size2 tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-circle size3 tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-circle size4 tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-circle size5 tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-arrows tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa fa-pencil tool" aria-hidden="true"></i></span>
+                    <span class="badge"><i class="fa clearDrawing tool">Clear</i></span>
+                </div>
+            </div>
+            <br>
+            <!-- Stores the literallycanvas canvas -->
+            <div class="row">
+                <div class="col-lg-10 col-centered" id="canvasArea">
+                    <div class="literally"></div>
+                    <span>Your ID is: </span>
+                    <span id="drawingID"></span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Stores the literallycanvas canvas -->
-    <div class="literally"></div>
-    <!-- Supposed to denote the current page that you're drawing on' -->
-    <input type="range" id="myRange">
-  </div>
+    <!-- A whole mess of scripts, abandon hope all ye who enter here -->
+    <script src="js/literallycanvas-core.min.js"></script>
+    <script src="js/spectrum.js"></script>
+    <script type="text/javascript">
+        var imageWidth = $('#canvasArea').width();
+        var imageHeight = $('#canvasArea').height();
+        var drawingData = [];
+        var lc = null;
+        var tools;
+        var strokeWidths;
+        var colors;
+        var setCurrentByName;
+        var findByName;
+        var save;
 
-  <!-- A whole mess of scripts, abandon hope all ye who enter here -->
-  <script src="js/jquery-1.8.2.js"></script>
-  <script src="js/literallycanvas-core.min.js"></script>
-  <script src="js/spectrum.js"></script>
-  <script type="text/javascript">
+        // the only LC-specific thing we have to do
+        var containerOne = document.getElementsByClassName('literally')[0];
+        var showLC = function() {
 
-      var imageWidth = 800;
-      var imageHeight = 200;
-      var drawingData = [];
-      var lc = null;
-      var tools;
-      var strokeWidths;
-      var colors;
-      var setCurrentByName;
-      var findByName;
-      var save;
+            // disable scrolling on touch devices so we can actually draw
+            $(document).bind('touchmove', function(e) {
+                if (e.target === document.documentElement) {
+                    return e.preventDefault();
+                }
+            });
+            lc = LC.init(containerOne, {
+                imageSize: {
+                    width: imageWidth,
+                    height: imageHeight
+                },
+                defaultStrokeWidth: 3,
+                strokeWidths: [10, 20, 50],
+                secondaryColor: 'transparent',
+                backgroundShapes: [
 
-      // the only LC-specific thing we have to do
-      var containerOne = document.getElementsByClassName('literally')[0];
-      var showLC = function () {
-        // disable scrolling on touch devices so we can actually draw
-        $(document).bind('touchmove', function (e) {
-          if (e.target === document.documentElement) {
-            return e.preventDefault();
-          }
-        });
-        lc = LC.init(containerOne, {
-          imageSize: {
-            width: imageWidth,
-            height: imageHeight
-          },
-          defaultStrokeWidth: 3,
-          strokeWidths: [10, 20, 50],
-          secondaryColor: 'transparent',
-          backgroundShapes: [
+                ]
+            });
+            lc.setZoom(1.0);
+            window.demoLC = lc;
 
-          ]
-        });
-        lc.setZoom(2.4);
-        window.demoLC = lc;
-        //lc.setWatermarkImage(watermarkImage);
-        save = function (e) {
-
-          //localStorage.setItem('drawing', JSON.stringify(lc.getSnapshot()));
-        }
-        lc.on('drawingChange', save);
-        lc.on('pan', save);
-        lc.on('zoom', save);
-      };
-      $(document).ready(function () {
-        // disable scrolling on touch devices so we can actually draw
-        $(document).bind('touchmove', function (e) {
-          if (e.target === document.documentElement) {
-            return e.preventDefault();
-          }
-        });
-        showLC();
-      });
-      //Needed for interact with Firebase
-      //TODO: Implement firebase xd
-      function parseSnapshot(s) {
-        for (var i = 0; i < s.shapes.length; i++) {
-          console.log(s.shapes.length);
-          var shapeData = {};
-          var shape = s.shapes[i];
-          if (shape.className == 'LinePath') {
-            shapeData.color = shape.data.pointColor;
-            shapeData.size = shape.data.pointSize;
-            shapeData.strokeData = [];
-            for (var j = 0; j < shape.data.smoothedPointCoordinatePairs.length; j++) {
-              //Push da data! ~~~~
-              shapeData.strokeData.push([Math.round(shape.data.smoothedPointCoordinatePairs[j][0] * 100) / 100, Math.round((imageHeight / 2 - shape.data.smoothedPointCoordinatePairs[j][1]) * 100) / 100])
+            //lc.setWatermarkImage(watermarkImage);
+            save = function(e) {
+                //localStorage.setItem('drawing', JSON.stringify(lc.getSnapshot()));
             }
-            drawingData.push(shapeData);
-          }
+            lc.on('drawingChange', save);
+            lc.on('pan', save);
+            lc.on('zoom', save);
+        };
+        $(document).ready(function() {
+
+            // disable scrolling on touch devices so we can actually draw
+            $(document).bind('touchmove', function(e) {
+                if (e.target === document.documentElement) {
+                    return e.preventDefault();
+                }
+            });
+            showLC();
+        });
+
+        //Needed for interact with Firebase
+        //TODO: Implement firebase xd
+        function parseSnapshot(s) {
+            for (var i = 0; i < s.shapes.length; i++) {
+                console.log(s.shapes.length);
+                var shapeData = {};
+                var shape = s.shapes[i];
+                if (shape.className == 'LinePath') {
+                    shapeData.color = shape.data.pointColor;
+                    shapeData.size = shape.data.pointSize;
+                    shapeData.strokeData = [];
+                    for (var j = 0; j < shape.data.smoothedPointCoordinatePairs.length; j++) {
+
+                        //Push da data! ~~~~
+                        shapeData.strokeData.push([Math.round(shape.data.smoothedPointCoordinatePairs[j][0] * 100) / 100, Math.round((imageHeight / 2 - shape.data.smoothedPointCoordinatePairs[j][1]) * 100) / 100])
+                    }
+                    drawingData.push(shapeData);
+                }
+            }
         }
-      }
-
-  </script>
-<script src="js/msPaintvr.js"></script>
-
-
-<script src="js/drawingCanvas.js" type="text/javascript"></script>
-
-
+    </script>
+    <script src="js/msPaintvr.js"></script>
+    <script src="js/drawingCanvas.js" type="text/javascript"></script>
 
 </body>
 

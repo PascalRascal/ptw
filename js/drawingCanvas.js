@@ -1,13 +1,14 @@
 var app;
 //Button shit
 $(document).ready(function () {
+    var placeToAppendID = "#drawingID";
     var drawingIdDiv = document.createElement('div');
     var options = {
         
     }
     options.lCanvas = lc;
     app = new MSPaintVR(options);
-    drawingIdDiv.innerHTML = app.drawingId;
+    $( placeToAppendID ).text( app.drawingId );
     document.body.appendChild(drawingIdDiv)
     app.init();
     app.login();
