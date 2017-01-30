@@ -98,7 +98,8 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
     }
 
     if(this.vrButton){
-         this.vrButton.setAttribute('href', 'ptw/view/?did=' + this.drawingId);
+        console.log('PLZ WORK IM BEGGING U');
+         this.vrButton.setAttribute('href', 'https://pascalrascal.github.io/ptw/view/?did=' + this.drawingId);
          this.vrButton.classList = 'btn btn-primary btn-lg btn-block';   
     }
 
