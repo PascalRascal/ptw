@@ -27,11 +27,12 @@ AFRAME.registerComponent('testing', {
   },
 
   init: function () {
-    var aSky =document.querySelector('a-sky');
+    var aSky = document.querySelector('a-sky');
     var color = findGetParameter('clr');
+    console.log(color);
     if(color){
       console.log('Changing the color!');
-      aSky.setAttribute('color', color);
+      aSky.setAttribute('color', '#' + color);
     }
     var imgSrc = findGetParameter('src');
     if(imgSrc){
@@ -100,7 +101,6 @@ AFRAME.registerComponent('testing', {
 
   update: function () {
     //cannot use canvas here because it is not created yet at init time
-    console.log("canvas res:");
     console.log(this.resolution);
     if (!this.lineInitated) {
       for(var i = 0; i < this.drawingLines.length; i++){
@@ -121,8 +121,7 @@ AFRAME.registerComponent('testing', {
     }
     if (this.state == 'waiting') {
       for(var i = 0; i < this.drawingLines.length; i++){
-        //this.drawingLines[i].traceSphere(deltaT, Math.floor(1 + Math.random() * 3));
-        this.drawingLines[i].drawShapeComplete();
+        this.drawingLines[i].drawShapeComplete(deltaT);
 
       }  
     }
@@ -137,7 +136,6 @@ AFRAME.registerComponent('testing', {
       this.msPaintVR = new MSPaintVR(options)
       this.msPaintVR.init();
       this.msPaintVR.login();
-      console.log(this.msPaintVR);
     }
 
 
@@ -181,7 +179,9 @@ function traceSphere(time, radius) {
 function DrawingLine(drawingData, object3D, options) {
   this.options = options;
   this.resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
-  this.linePosition = new THREE.Vector3(Math.cos(Math.random() * 2 * Math.PI) * 3, 0, Math.sin(Math.random() * 2 * Math.PI) * 3);
+  var randomAngle = Math.random() * 2 * Math.PI;
+  this.linePosition = new THREE.Vector3(Math.cos(randomAngle) * 20, 5 - Math.random() * 10, Math.sin(randomAngle) * 20);
+  this.linePositionInitial = this.linePosition.clone();
   this.lineInitiated = false;
   this.xoff = Math.random() * 100;
   this.yoff = Math.random() * 100;
@@ -202,6 +202,11 @@ function DrawingLine(drawingData, object3D, options) {
   this.index = 0;
   this.xShift = 10;
   this.yShift = 150;
+  this.sphereDone = false;
+
+  this.sphereRadius = 2 + Math.random() * 4;
+  this.sphereTimeToComplete = 3 + Math.random() * 7;
+  this.sphereRings = Math.random() * 30;
 
 }
 
@@ -246,14 +251,13 @@ DrawingLine.prototype.initiateLine = function () {
   //This is really stupid
   this.id = Math.floor((Math.random() * 100000000000)).toString();
   this.el.setObject3D(this.id, lineMesh);
-  console.log("geometry set BITCH");
   this.lineInitiated = true;
   this.linePosition.isMovingToPosition = false;
   this.velocity = new THREE.Vector3(-1, -2, 1);
 }
 
 DrawingLine.prototype.wander = function () {
-  var timeToComplete = 1000 + Math.floor(Math.random() * 4000);
+  var timeToComplete = 1000 + Math.floor(Math.random() * 3000);
   var angle = Math.random() * Math.PI * 2;
   var radius = Math.random() * 10;
   var randomX = Math.cos(angle) * Math.sqrt(100 - Math.pow(radius, 2));
@@ -306,7 +310,6 @@ DrawingLine.prototype.wander = function () {
   this.tweenX.start();
   this.tweenY.start();
   this.tweenZ.start();
-  console.log(this.tweenX);
   this.wandering = true;
 
 }
@@ -314,25 +317,18 @@ DrawingLine.prototype.wander = function () {
 /**
  * Traces out a sphere with the radius, needs deltaT (time between calls);
  */
-DrawingLine.prototype.traceSphere = function (time, radius) {
-  this.sphereTimeTrack += this.sphereDirection * time / 10000;
+DrawingLine.prototype.traceSphere = function (time, radius, timeToComplete, spirals) {
+  this.sphereTimeTrack +=  time / 10000;
   if (this.sphereTimeTrack > 1 || this.sphereTimeTrack < -1) {
-    var coinflip = Math.floor(Math.random() * 2);
-    if (coinflip == 0) {
-      this.sphereDirection = 1;
-    } else {
-      this.sphereDirection = -1;
-    }
-    this.sphereTimeTrack = this.sphereDirection * -1;
+    this.sphereDone = true;
   }
 
-  var spirals = 20;
   var t = this.sphereTimeTrack;
   var r = radius;
   var uT = r * t;
   var aT = spirals * Math.PI * t;
-  var newX = Math.sqrt(Math.pow(r, 2) - Math.pow(uT, 2)) * Math.cos(aT);
-  var newZ = Math.sqrt(Math.pow(r, 2) - Math.pow(uT, 2)) * Math.sin(aT);
+  var newX = Math.sqrt(Math.pow(r, 2) - Math.pow(uT, 2)) * Math.cos(aT) + this.linePositionInitial.x;
+  var newZ = Math.sqrt(Math.pow(r, 2) - Math.pow(uT, 2)) * Math.sin(aT) + this.linePositionInitial.z;
   var newY = uT;
   this.linePosition.set(newX, newY + 2, newZ);
   this.line.advance(this.linePosition);
@@ -342,11 +338,10 @@ DrawingLine.prototype.traceSphere = function (time, radius) {
  * Move the head of the line to the first position of its shape
  */
 DrawingLine.prototype.firstShapePosition = function(){
-  var timeToComplete = 10000 + Math.floor(Math.random() * 5000);
+  var timeToComplete = 10000 + Math.floor(Math.random() * 10000);
   var easings = [
     TWEEN.Easing.Quartic.In,
     TWEEN.Easing.Quartic.InOut,
-    TWEEN.Easing.Linear.None,
     TWEEN.Easing.Quintic.In,
     TWEEN.Easing.Circular.In,
     TWEEN.Easing.Circular.Out,
@@ -386,7 +381,6 @@ DrawingLine.prototype.firstShapePosition = function(){
   this.tweenX.start();
   this.tweenY.start();
   this.tweenZ.start();
-  console.log(this.tweenX);
   this.wandering = true;
 
 }
@@ -406,10 +400,14 @@ DrawingLine.prototype.drawShape = function(){
   }
 }
 
-DrawingLine.prototype.drawShapeComplete = function() {
+DrawingLine.prototype.drawShapeComplete = function(deltaT) {
   if(this.linePosition.isDoneX && this.linePosition.isDoneY && this.linePosition.isDoneZ){
     this.drawShape();
-  }else if(!this.linePosition.isMovingToPosition){
+  }
+  else if(!this.sphereDone && false){
+    this.traceSphere(deltaT, this.sphereRadius, this.sphereTimeToComplete, this.sphereRings);
+  }
+  else if(!this.linePosition.isMovingToPosition){
     this.linePosition.isMovingToPosition = true;
     this.firstShapePosition();
   }
