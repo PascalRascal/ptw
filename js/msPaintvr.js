@@ -3,7 +3,6 @@ function MSPaintVR(options) {
     this.auth = firebase.auth();
     this.db = firebase.database();
     var did = findGetParameter('did');
-    this.uid = null;
     this.drawingId = null;
     if(did){
         this.drawingId = did;
@@ -61,17 +60,13 @@ MSPaintVR.prototype.init = function () {
 
 }
 MSPaintVR.prototype.setUID = function(user){
-    if(user){
+    if(user && !this.uid){
         this.uid = user.uid
         console.log(this.uid);
         this.setDrawing(this.drawingId);
     } else{
         this.uid = null;
     }
-}
-var setUIDandDrawing = function(user, thing){
-    this.uid = user.uid;
-    thing.setDrawing(thing.drawingId);
 }
 MSPaintVR.prototype.setDrawing = function(drawingId) {
     if(!drawingId){
@@ -81,21 +76,22 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.showShare();
         this.painting = this.db.child('paintings').child(this.drawingId);
         this.painting.child('title').set('Untitled Work');
-        this.painting.child('author').set('Anonymous');
+        this.painting.child('artist').set('Anonymous');
         this.painting.child('editable').set(false);
         this.painting.child('uid').set(this.uid);
         this.shapes2D = this.painting.child('shapes2D');
     }else{
+        console.log('Uinsg old one!');
         localStorage.setItem('did', drawingId);
         this.drawingId = drawingId;
         this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
-        this.author = this.painting.child('author');
+        this.author = this.painting.child('artist');
         this.shapes2D = this.painting.child('shapes2D');
         console.log(this.uid);
-
     }
+
 
     if(this.vrButton){
         console.log('PLZ WORK IM BEGGING U');
@@ -116,6 +112,14 @@ MSPaintVR.prototype.login = function () {
     this.auth.signInAnonymously().catch(function (error) {
         console.log("errOR");
     });
+}
+
+MSPaintVR.prototype.setTitle = function (title){
+    return this.painting.child('title').set(title);
+}
+
+MSPaintVR.prototype.setAuthor = function(artist){
+    return this.painting.child('artist').set(artist);
 }
 /**
  * 
@@ -153,6 +157,7 @@ MSPaintVR.prototype.draw2DShape = function (s) {
     p1.then(function (shape) {
         var memeShape = LC.createShape('LinePath', { points: shape });
         lc.saveShape(memeShape, false);
+        console.log("Shape Saved");
     })
     p1.catch(function (reason) {
         console.log(reason);
