@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Paint the World</title>
+    <style>
+        #ui {
+            color: white;
+            background-color:  grey;
+            opacity: 0.5;
+            text-align: center;
+            z-index: 1;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+        }
+        #button {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        a {
+            color: white;
+        }
+    </style>
+<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    // TODO: Replace with your project's customized code snippet
+    var config = {
+        apiKey: "AIzaSyBe5R-UlRrhLs1mlgTJ4X2NRXcP0dnv6_g",
+        authDomain: "mspaintvr.firebaseapp.com",
+        databaseURL: "https://mspaintvr.firebaseio.com",
+        storageBucket: "mspaintvr.appspot.com",
+        messagingSenderId: "940993919791",
+    };
+    firebase.initializeApp(config);
+</script>
+<script src="js/dist/bspline.js"></script>
+<script src="js/msPaintvr.js"></script>
+<meta name="description" content="Paint the World!">
+
+<script src="js/dist/webvr-polyfill.js"></script>
+<script src="js/dist/aframe-master.js"></script>
+<script src="js/dist/THREE.MeshLine.js"></script>
+<script src="js/dist/webvr-ui.min.js"></script>
+
+<script src="js/meshLineDrawerComp.js"></script>
+
+</head>
+
+<body>
+    <a-scene id="aframeScene">
+
+        <a-plane testyo rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+        <a-entity testing="lineWidth:10; color: #0f0"></a-entity>
+        <a-sky color="#ECECEC"></a-sky>
+        <a-entity position="0 0 3.8">
+            <a-camera></a-camera>
+        </a-entity>
+    </a-scene>
+</body>
+
+<div id="ui">
+    <h1>Paint the World</h1>
+    <p>Show Off your Painting Skill with your Pals!</p>
+
+    <div id="button"></div>
+
+    <div id="help">
+        <a href="#" id="fullscreenLads">Try it without a headset</a>
+        <span id="learn-more">
+            or <a href="https://webvr.info" target="_blank">get set up in VR.</a>
+        </span>
+
+    </div>
+</div>
+<a href="#" id="exit" onclick="enterVR.requestExit()">✕</a>
+
+
+
+</div>
+<script src="js/vrButton.js"></script>
+
+<script type="text/javascript">
+
+    </script>
+
+</html>
