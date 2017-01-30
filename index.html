@@ -56,7 +56,7 @@
             border: none;
             outline:none;
         }
-          .size1 {
+        .size1 {
             font-size: 50%;
             padding-bottom: 4px;
         }
@@ -84,15 +84,20 @@
             margin: 30 auto;
             height: 530px;
         }
-        .btn {
+        /*.btn {
             border-radius: 0px;
             background: #2d1e2f;
-        }    
+        }    */
         .btn #shareOptions {
         }
         img.logo{
             width: 100%;
             height: auto;
+        }
+        .sharePanel {
+            margin: 15px;
+            /*border: 0;*/
+            /*padding: 0;*/
         }
     </style>
 </head>
@@ -140,17 +145,13 @@
             <div class="row">
                 <div class="col-lg-12 col-centered" id="canvasArea">
                     <div class="literally"></div>
-                    <a id="viewInVR" href="ptw/view/" type="button" class="btn btn-primary btn-lg btn-block disabled">View in VR</a>
-                    <div class="panel-group">
-                        <div id="shareOptions" class="btn btn-primary btn-lg btn-block">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#collapse1">Collapsible panel</a>
-                                </h4>
-                            </div>
-                            <div id="collapse1" class="panel-collapse collapse">
-                                <div class="panel-body">Panel Body</div>
-                                <div class="panel-footer">Panel Footer</div>
+
+                    <button id="viewInVR" href="ptw/view/" class="btn btn-primary btn-lg btn-block">View in VR</button>
+                    <button data-toggle="collapse" data-target="#sharePanel" aria-expanded="false" aria-controls="sharePanel" id="shareOptions" class="btn btn-primary btn-lg btn-block">Share</button>
+                    <div class="panel-group row">
+                        <div class="collapse collapse-well" id="sharePanel">
+                            <div class="well sharePanel">
+                                <p>Testing panel</p>
                             </div>
                         </div>
                     </div>
@@ -163,6 +164,14 @@
     <script src="js/literallycanvas.js"></script>
     <script src="js/spectrum.js"></script>
     <script type="text/javascript">
+
+        $('.collapse-well').on('show.bs.collapse', function () {
+            $(this).closest("#canvasArea")
+                .find(".collapse.in")
+                .not(this)
+                .collapse('toggle')
+        })
+
         //THESE ARE HARD-CODED FOR A REASON @ARON
         var imageWidth = 800;
         var imageHeight = 200;
