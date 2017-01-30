@@ -87,7 +87,7 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.shapes2D = this.painting.child('shapes2D');
     }else{
         localStorage.setItem('did', drawingId);
-
+        this.drawingId = drawingId;
         this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
