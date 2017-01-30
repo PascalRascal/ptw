@@ -23,48 +23,6 @@ $(document).ready(function () {
         }
     });
 
-    $(".fa-undo").click(function () {
-        lc.undo();
-    })
-    $(".fa-repeat").click(function () {
-        lc.redo();
-    })
-    $(".fa-search-plus").click(function () {
-        lc.zoom(0.1);
-    })
-    $(".fa-search-minus").click(function () {
-        lc.zoom(-0.1);
-    })
-    $(".size1").click(function () {
-        lc.tool.strokeWidth = 2;
-    });
-    $(".size2").click(function () {
-        console.log("click")
-        lc.tool.strokeWidth = 5;
-    });
-    $(".size3").click(function () {
-        lc.tool.strokeWidth = 7;
-    });
-    $(".size4").click(function () {
-        lc.tool.strokeWidth = 10;
-    });
-    $(".size5").click(function () {
-        lc.tool.strokeWidth = 15;
-    });
-
-    $(".fa-pencil").click(function () {
-        lc.setTool(pencilTool);
-    })
-
-    $(".fa-arrows").click(function () {
-        lc.setTool(panTool);
-    })
-
-    $(".clearDrawing").click(function () {
-        lc.clear();
-        save();
-    })
-
     lc.on('shapeSave', function (e) {
         var shape = e.shape;
         console.log(shape);
@@ -85,10 +43,14 @@ $(document).ready(function () {
             shapeData.linePoints2D[i][1] = shape.points[i].y;
         }
         
-         
+    
         app.push2DShape(shapeData).then(function () {
+            
             removeShape(lc, shape.id);
-        })
+        }).catch(function(reason){
+            console.log(reason);
+            removeShape(lc, shape.id);
+        });
         
         console.log("shape ended");
     });
@@ -115,5 +77,5 @@ $(document).ready(function () {
         }
     }
     var randId = function() {
-    return Math.random().toString(36).substr(2, 12);
+    return Math.random().toString(36).substr(2, 8);
 }
