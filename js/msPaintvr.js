@@ -63,6 +63,8 @@ MSPaintVR.prototype.init = function () {
 MSPaintVR.prototype.setUID = function(user){
     if(user){
         this.uid = user.uid
+        console.log(this.uid);
+        this.setDrawing(this.drawingId);
     } else{
         this.uid = null;
     }
@@ -84,13 +86,15 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.painting.child('uid').set(this.uid);
         this.shapes2D = this.painting.child('shapes2D');
     }else{
-        console.log('Getting Old Id');
         localStorage.setItem('did', drawingId);
+
         this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
         this.author = this.painting.child('author');
         this.shapes2D = this.painting.child('shapes2D');
+        console.log(this.uid);
+
     }
 
     if(this.vrButton){
@@ -103,7 +107,6 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.shapes2D.on('child_removed', this.undraw2DShape.bind(this));
     }
     if (this.mlMaker) {
-        console.log("yo yo yo");
         this.shapes2D.on('child_added', this.draw3DShape.bind(this));
         this.shapes2D.on('child_removed', this.undraw3DShape.bind(this));
     }
@@ -111,7 +114,7 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
 MSPaintVR.prototype.login = function () {
     this.auth.signInAnonymously().catch(function (error) {
         console.log("errOR");
-    }).then(this.setDrawing(this.drawingId));
+    });
 }
 /**
  * 
@@ -167,16 +170,13 @@ MSPaintVR.prototype.undraw2DShape = function (s) {
  * */
 MSPaintVR.prototype.draw3DShape = function (s) {
     var shape = s.val();
-    console.log(shape);
     /**
      * Todo: Make height+width not bound in stone
      */
     var maxHeight = 200;
     var maxWidth = 800;
     var points = generate3DPoints(shape.linePoints2D, maxWidth, maxHeight);
-    console.log("DRAWING");
     this.mlMaker.createMeshLine(points, shape.color, shape.strokeWidth);
-    console.log('My id ' + this.drawingId);
 }
 MSPaintVR.prototype.undraw3DShape = function (s) {
     var shape = s.val();
@@ -207,7 +207,6 @@ var options = {
 }
 var generate2DPoints = function (shape) {
     var newShape = LC.createShape('LinePath')
-    console.log(LC);
     for (var i = 0; i < shape.linePoints2D.length; i++) {
         newShape.addPoint(LC.createShape('Point', {
             x: shape.linePoints2D[i][0],

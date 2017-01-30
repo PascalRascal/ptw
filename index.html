@@ -21,17 +21,17 @@
         };
         firebase.initializeApp(config);
     </script>
-        <meta name="description" content="Paint the World!">
+<meta name="description" content="Paint the World!">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.js" type="text/javascript"></script>
-    <link href="css/spectrum.css" rel="stylesheet">
-    <link href="css/literallycanvas.css" rel="stylesheet">
-    <script src="https://use.fontawesome.com/9e19aba51c.js"></script>
-    <meta charset="UTF-8">
+<link href="css/spectrum.css" rel="stylesheet">
+<link href="css/literallycanvas.css" rel="stylesheet">
+<script src="https://use.fontawesome.com/9e19aba51c.js"></script>
+<meta charset="UTF-8">
 
-    <style type="text/css">
+<style type="text/css">
           body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: gray;
+            background-color: #f7b32b;
           }
           .size1 {
             font-size: 50%;
@@ -63,13 +63,17 @@
           }
           .btn {
 	border-radius: 0px;
+    background: #2d1e2f;
 }
+        .btn #shareOptions {
+            
+        }
     
     </style>
 </head>
 
 <body>
-    <div>    
+    <div>
         <div class="col-centered col-sm-11">
             <div class="row">
                 <div class="col-sm-12 col-centered text-center">
@@ -81,6 +85,20 @@
                 <div class="col-lg-12 col-centered" id="canvasArea">
                     <div class="literally"></div>
                     <a id="viewInVR" href="/view/" type="button" class="btn btn-primary btn-lg btn-block disabled">View in VR</a>
+                    <div class="panel-group">
+                        <div id="shareOptions" class="btn btn-primary btn-lg btn-block">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#collapse1">Collapsible panel</a>
+                                </h4>
+                            </div>
+                            <div id="collapse1" class="panel-collapse collapse">
+                                <div class="panel-body">Panel Body</div>
+                                <div class="panel-footer">Panel Footer</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -104,10 +122,10 @@
 
         // the only LC-specific thing we have to do
         var containerOne = document.getElementsByClassName('literally')[0];
-        var showLC = function() {
+        var showLC = function () {
 
             // disable scrolling on touch devices so we can actually draw
-            $(document).bind('touchmove', function(e) {
+            $(document).bind('touchmove', function (e) {
                 if (e.target === document.documentElement) {
                     return e.preventDefault();
                 }
@@ -122,16 +140,17 @@
                     LC.tools.Pencil,
                     LC.tools.Pan
                 ],
+                backgroundColor: '#ECECEC',
                 toolbarPosition: 'top',
                 strokeWidths: [2, 3, 5, 7, 8]
 
             });
-            lc.setPan(imageWidth/4, 0);
+            lc.setPan(imageWidth / 4, 0);
             lc.setZoom(2.4);
             window.demoLC = lc;
 
             //lc.setWatermarkImage(watermarkImage);
-            save = function(e) {
+            save = function (e) {
                 //localStorage.setItem('drawing', JSON.stringify(lc.getSnapshot()));
             }
             $('.literally').remove('.lc-undo');
@@ -139,10 +158,10 @@
             lc.on('pan', save);
             lc.on('zoom', save);
         };
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             // disable scrolling on touch devices so we can actually draw
-            $(document).bind('touchmove', function(e) {
+            $(document).bind('touchmove', function (e) {
                 if (e.target === document.documentElement) {
                     return e.preventDefault();
                 }
@@ -150,29 +169,9 @@
             showLC();
         });
 
-        //Needed for interact with Firebase
-        //TODO: Implement firebase xd
-        function parseSnapshot(s) {
-            for (var i = 0; i < s.shapes.length; i++) {
-                console.log(s.shapes.length);
-                var shapeData = {};
-                var shape = s.shapes[i];
-                if (shape.className == 'LinePath') {
-                    shapeData.color = shape.data.pointColor;
-                    shapeData.size = shape.data.pointSize;
-                    shapeData.strokeData = [];
-                    for (var j = 0; j < shape.data.smoothedPointCoordinatePairs.length; j++) {
-
-                        //Push da data! ~~~~
-                        shapeData.strokeData.push([Math.round(shape.data.smoothedPointCoordinatePairs[j][0] * 100) / 100, Math.round((imageHeight / 2 - shape.data.smoothedPointCoordinatePairs[j][1]) * 100) / 100])
-                    }
-                    drawingData.push(shapeData);
-                }
-            }
-        }
     </script>
-    <script src="js/msPaintvr.js"></script>
-    <script src="js/drawingCanvas.js" type="text/javascript"></script>
+<script src="js/msPaintvr.js"></script>
+<script src="js/drawingCanvas.js" type="text/javascript"></script>
 
 </body>
 
