@@ -6,6 +6,10 @@
     <title>Paint the World</title>
     <style>
         #ui {
+            padding-top: 25px;
+            padding-left: 50px;
+            padding-right: 50px;
+            padding-bottom: 25px;;
             color: white;
             background-color:  grey;
             opacity: 0.5;
@@ -46,27 +50,27 @@
 <script src="js/dist/aframe-master.js"></script>
 <script src="js/dist/THREE.MeshLine.js"></script>
 <script src="js/dist/webvr-ui.min.js"></script>
-
+<script src="js/customSky.js"></script>
 <script src="js/meshLineDrawerComp.js"></script>
-
 </head>
 
 <body>
     <a-scene id="aframeScene">
 
-        <a-plane testyo rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
         <a-entity testing="lineWidth:10; color: #0f0"></a-entity>
-        <a-sky color="#ECECEC"></a-sky>
-        <a-entity position="0 0 3.8">
+        <a-sky customSky color="#ECECEC"></a-sky>
+        <a-entity position="0 0 0">
             <a-camera></a-camera>
         </a-entity>
     </a-scene>
 </body>
 
 <div id="ui">
-    <h1>Paint the World</h1>
+    <h1 id="paintingTitle">Paint the World</h1>
+    <h3 id="paintingArtist"> By Blaise Marchetti </h3>
     <p>Show Off your Painting Skill with your Pals!</p>
 
+    <p>Click to Vote for us in the Virtuleap WebVR Hackathon!</p>
     <div id="button"></div>
 
     <div id="help">
@@ -75,6 +79,9 @@
             or <a href="https://webvr.info" target="_blank">get set up in VR.</a>
         </span>
 
+    </div>
+    <div id="quickPlug">
+        <a href="insertLinkHere" id="">Vote For Us in the Virtuleap Webvr Hackathon!</a>
     </div>
 </div>
 <a href="#" id="exit" onclick="enterVR.requestExit()">✕</a>

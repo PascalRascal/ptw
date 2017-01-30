@@ -27,6 +27,16 @@ AFRAME.registerComponent('testing', {
   },
 
   init: function () {
+    var aSky =document.querySelector('a-sky');
+    var color = findGetParameter('clr');
+    if(color){
+      console.log('Changing the color!');
+      aSky.setAttribute('color', color);
+    }
+    var imgSrc = findGetParameter('src');
+    if(imgSrc){
+      aSky.setAttribute('src', imgSrc);
+    }
     console.log("Initiated meshline!");
     this.resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
     this.linePosition = new THREE.Vector3(0, 0, 0);
@@ -146,6 +156,17 @@ AFRAME.registerComponent('testyo', {
   }
 })
 
+console.log('custom sky');
+AFRAME.registerComponent('customSky', {
+    init: function() {
+        console.log('REEE REEE');
+        console.log(this.el);
+    },
+    tick: function() {
+        console.log('??');
+    }
+})
+
 console.log("Did I miss somethjing?");
 function traceSphere(time, radius) {
   var t = time;
@@ -160,7 +181,7 @@ function traceSphere(time, radius) {
 function DrawingLine(drawingData, object3D, options) {
   this.options = options;
   this.resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
-  this.linePosition = new THREE.Vector3(0, 0, 0);
+  this.linePosition = new THREE.Vector3(Math.cos(Math.random() * 2 * Math.PI) * 3, 0, Math.sin(Math.random() * 2 * Math.PI) * 3);
   this.lineInitiated = false;
   this.xoff = Math.random() * 100;
   this.yoff = Math.random() * 100;
@@ -177,7 +198,7 @@ function DrawingLine(drawingData, object3D, options) {
   this.drawingData = drawingData;
   this.el = object3D;
   this.color = options.color;
-  this.lineWidth = options.lineWidth;
+  this.lineWidth = options.lineWidth * 4;
   this.index = 0;
   this.xShift = 10;
   this.yShift = 150;
@@ -340,8 +361,6 @@ DrawingLine.prototype.firstShapePosition = function(){
   this.linePosition.isDoneX = false;
   this.linePosition.isDoneY = false;
   this.linePosition.isDoneZ = false;
-  var length = 800;
-  var radius = length / (2 * Math.PI)
 
   var newX = this.drawingData[this.index][0];
     var newY = this.drawingData[this.index][1];
@@ -404,4 +423,22 @@ DrawingLine.prototype.drawShapeComplete = function() {
 
 DrawingLine.prototype.remove = function () {
   this.el.removeObject3D(this.id);
+}
+
+/**
+ Thanks for
+http://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript
+**/
+//what am i gonna do? parse the string myslef? LMFAO
+var findGetParameter = function(parameterName) {
+    var result = null,
+        tmp = [];
+    location.search
+        .substr(1)
+        .split("&")
+        .forEach(function (item) {
+            tmp = item.split("=");
+            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        });
+    return result;
 }

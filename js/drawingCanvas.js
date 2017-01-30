@@ -4,7 +4,8 @@ $(document).ready(function () {
     var placeToAppendID = "#drawingID";
     var drawingIdDiv = document.createElement('div');
     var options = {
-        
+        shareDiv: document.getElementById("shareDiv"),
+        vrButton: document.getElementById("viewInVR")
     }
     options.lCanvas = lc;
     app = new MSPaintVR(options);
@@ -72,7 +73,9 @@ $(document).ready(function () {
             strokeWidth: lc.tool.strokeWidth,
             color: lc.tool.color,
             linePoints2D: [],
-            shapeId: sID
+            shapeId: sID,
+            height: Math.ceil(lc.height),
+            width: Math.ceil(lc.width)
         };
         var points = [];
         

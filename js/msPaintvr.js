@@ -11,21 +11,44 @@ function MSPaintVR(options) {
     }else{
         
     }
+    if(options.titleDiv){
+        this.titleDiv = titleDiv;
+    }else{
+        this.titleDiv = {};
+    }
+    if(options.shareDiv){
+        this.shareDiv = options.shareDiv;
+    }else{
+        this.shareDiv = {};
+    }
+    if(options.authorDiv){
+        this.authorDiv = options.authorDiv;
+    }
     if (options.meshLineMaker) {
         this.mlMaker = options.meshLineMaker;
     }
     if (options.lCanvas) {
         this.lCanvas = options.lCanvas;
     }
+    if(options.vrButton){
+        this.vrButton = options.vrButton;
+    }
 }
 
-
+MSPaintVR.prototype.showShare = function(){
+    this.shareDiv.innerHTML = 'View in VR: ' + window.location.href + '/view/?did=' + this.drawingId;
+}
 MSPaintVR.prototype.init = function () {
     //Initiate Authentication and Database
     this.auth = firebase.auth();
     this.db = firebase.database().ref();
     if (this.drawingId) {
-        this.setDrawing(this.drawingId);
+        //this.setDrawing(this.drawingId);
+    } else {
+        var oldId = localStorage.getItem('did');
+        if(oldId){
+            this.drawingId = oldId
+        }
     }
     this.db.child('paintings');
 
@@ -50,8 +73,10 @@ var setUIDandDrawing = function(user, thing){
 }
 MSPaintVR.prototype.setDrawing = function(drawingId) {
     if(!drawingId){
-        console.log('YO!');
+        console.log('Getting new id!');
         this.drawingId = randId();
+        localStorage.setItem('did', this.did);
+        this.showShare();
         this.painting = this.db.child('paintings').child(this.drawingId);
         this.painting.child('title').set('Untitled Work');
         this.painting.child('author').set('Anonymous');
@@ -59,10 +84,18 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.painting.child('uid').set(this.uid);
         this.shapes2D = this.painting.child('shapes2D');
     }else{
+        console.log('Getting Old Id');
+        localStorage.setItem('did', drawingId);
+        this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
         this.author = this.painting.child('author');
         this.shapes2D = this.painting.child('shapes2D');
+    }
+
+    if(this.vrButton){
+         this.vrButton.setAttribute('href', '/view/?did=' + this.drawingId);
+         this.vrButton.classList = 'btn btn-primary btn-lg btn-block';   
     }
 
      if (this.lCanvas) {
@@ -189,7 +222,7 @@ var generate2DPoints = function (shape) {
 }
 
 
-
+var lineCount = 0;
 var generate3DPoints = function (points, maxWidth, maxHeight) {
     //TODO: Implement Proper depth for lines on top of each other
     if(points.length){
@@ -205,10 +238,11 @@ var generate3DPoints = function (points, maxWidth, maxHeight) {
 
         for (var i = 0; i < bsplinePoints.length; i++) {
             points3D[i] = [];
-            points3D[i][0] = Math.cos(2 * Math.PI * bsplinePoints[i][0] / width) * radius;
+            points3D[i][0] = (Math.cos(2 * Math.PI * bsplinePoints[i][0] / width)) * (radius-lineCount);
             points3D[i][1] = (maxHeight / 2 - bsplinePoints[i][1]);
-            points3D[i][2] = Math.sin(2 * Math.PI * bsplinePoints[i][0] / width) * radius;
+            points3D[i][2] = (Math.sin(2 * Math.PI * bsplinePoints[i][0] / width)) * (radius-lineCount);
         }
+        
         return points3D;
     }else{
 
