@@ -98,7 +98,7 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
     }
 
     if(this.vrButton){
-         this.vrButton.setAttribute('href', '/view/?did=' + this.drawingId);
+         this.vrButton.setAttribute('href', 'ptw/view/?did=' + this.drawingId);
          this.vrButton.classList = 'btn btn-primary btn-lg btn-block';   
     }
 
