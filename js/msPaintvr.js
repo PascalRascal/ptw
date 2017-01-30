@@ -3,10 +3,13 @@ function MSPaintVR(options) {
     this.auth = firebase.auth();
     this.db = firebase.database();
     var did = findGetParameter('did');
+    this.uid = null;
+    this.drawingId = null;
     if(did){
         this.drawingId = did;
+        console.log('did lads');
     }else{
-        this.drawingId = randId();
+        
     }
     if (options.meshLineMaker) {
         this.mlMaker = options.meshLineMaker;
@@ -22,46 +25,60 @@ MSPaintVR.prototype.init = function () {
     this.auth = firebase.auth();
     this.db = firebase.database().ref();
     if (this.drawingId) {
-        this.painting = this.db.child('paintings').child(this.drawingId);
-        this.painting.child('title').set('REEEEE');
-        this.painting.child('author').set('Blaise Marchetti');
-        this.shapes2D = this.painting.child('shapes2D');
-        this.shapes3D = this.painting.child('shapes3D');
+        this.setDrawing(this.drawingId);
     }
+    this.db.child('paintings');
 
     //Declare All the Cool Events
-    this.auth.onAuthStateChanged(function (user) {
-        if (user) {
-            //Do things with the user! 
-            this.uid = user.uid;
-
-        } else {
-            this.uid = null;
-        }
-    });
+    this.auth.onAuthStateChanged(this.setUID.bind(this));
 
     /**
     We can use the .bind on a function to keep the context the same! amAZXING
     **/
-    if (this.lCanvas) {
+
+}
+MSPaintVR.prototype.setUID = function(user){
+    if(user){
+        this.uid = user.uid
+    } else{
+        this.uid = null;
+    }
+}
+var setUIDandDrawing = function(user, thing){
+    this.uid = user.uid;
+    thing.setDrawing(thing.drawingId);
+}
+MSPaintVR.prototype.setDrawing = function(drawingId) {
+    if(!drawingId){
+        console.log('YO!');
+        this.drawingId = randId();
+        this.painting = this.db.child('paintings').child(this.drawingId);
+        this.painting.child('title').set('Untitled Work');
+        this.painting.child('author').set('Anonymous');
+        this.painting.child('editable').set(false);
+        this.painting.child('uid').set(this.uid);
+        this.shapes2D = this.painting.child('shapes2D');
+    }else{
+        this.painting = this.db.child('paintings').child(drawingId);
+        this.title = this.painting.child('title');
+        this.author = this.painting.child('author');
+        this.shapes2D = this.painting.child('shapes2D');
+    }
+
+     if (this.lCanvas) {
         this.shapes2D.on('child_added', this.draw2DShape.bind(this));
         this.shapes2D.on('child_removed', this.undraw2DShape.bind(this));
     }
     if (this.mlMaker) {
-        this.shapes3D.on('child_added', this.draw3DShape.bind(this));
-        this.shapes3D.on('child_removed', this.undraw3DShape.bind(this));
+        console.log("yo yo yo");
+        this.shapes2D.on('child_added', this.draw3DShape.bind(this));
+        this.shapes2D.on('child_removed', this.undraw3DShape.bind(this));
     }
 }
 MSPaintVR.prototype.login = function () {
     this.auth.signInAnonymously().catch(function (error) {
         console.log("errOR");
-    })
-}
-MSPaintVR.prototype.uploadPainting = function (painting) {
-    painting.userID = this.uid;
-    this.painting.push(painting).then(function () {
-        console.log("Pushed to database!");
-    })
+    }).then(this.setDrawing(this.drawingId));
 }
 /**
  * 
@@ -73,6 +90,10 @@ MSPaintVR.prototype.push2DShape = function (shape) {
 MSPaintVR.prototype.draw2DShape = function (s) {
     var shape = s.val();
     var lc = this.lCanvas;
+    //If no drawing exists 
+    if(!this.drawingId){
+        this.setDrawing();
+    }
     /**
      * The promise part is probs unneccessary
      */
@@ -108,19 +129,20 @@ MSPaintVR.prototype.undraw2DShape = function (s) {
     console.log(shape);
 }
 
-MSPaintVR.prototype.push3DShape = function (shape) {
-    this.shapes3D.push(shape).then(function () {
-        console.log('3D Shape Pushed');
-    })
-}
 /**
  * VR Environment Functions
  * */
-MSPaintVR.prototype.draw3DShape = function (shape) {
-    var maxHeight = 400;
-    var maxWidth = 1200;
-    var points = generate3DPoints(shape.linePoints2D, maxHeight, maxWidth);
-    mlMaker.createMeshLine(points, shape.color, shape.strokeWidth);
+MSPaintVR.prototype.draw3DShape = function (s) {
+    var shape = s.val();
+    console.log(shape);
+    /**
+     * Todo: Make height+width not bound in stone
+     */
+    var maxHeight = 200;
+    var maxWidth = 800;
+    var points = generate3DPoints(shape.linePoints2D, maxWidth, maxHeight);
+    console.log("DRAWING");
+    this.mlMaker.createMeshLine(points, shape.color, shape.strokeWidth);
     console.log('My id ' + this.drawingId);
 }
 MSPaintVR.prototype.undraw3DShape = function (s) {
@@ -170,31 +192,25 @@ var generate2DPoints = function (shape) {
 
 var generate3DPoints = function (points, maxWidth, maxHeight) {
     //TODO: Implement Proper depth for lines on top of each other
-    var width = maxWidth;
-    var height = maxHeight;
-    var radius = maxWidth / (2 * Math.PI);
-    var points3D = [];
-    for (var i = 0; i < points.length; i++) {
-        points3D[i] = [];
-        points3D[i][0] = Math.cos(2 * Math.PI * points[i][0] / width) * radius;
-        points3D[i][1] = (maxHeight / 2 - points[i][1]);
-        points3D[i][2] = Math.sin(2 * Math.PI * points[i][0] / width) * radius;
-    }
-    return points3D;
-}
+    if(points.length){
+        var width = maxWidth;
+        var height = maxHeight;
+        var radius = maxWidth / (2 * Math.PI);
+        var points3D = [];
+        var spline = new BSpline(points,3);
+        var bsplinePoints = [];
+        for(var i = 0; i <= 1; i+= 1/(points.length * 2)){
+            bsplinePoints.push(spline.calcAt(i));
+        }
 
-var findGetParameter = function (parameterName) {
-    var result = null,
-        tmp = [];
-    location.search
-        .substr(1)
-        .split("&")
-        .forEach(function (item) {
-            tmp = item.split("=");
-            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-        });
-    return result;
-}
-function randId() {
-    return Math.random().toString(36).substr(2, 12);
+        for (var i = 0; i < bsplinePoints.length; i++) {
+            points3D[i] = [];
+            points3D[i][0] = Math.cos(2 * Math.PI * bsplinePoints[i][0] / width) * radius;
+            points3D[i][1] = (maxHeight / 2 - bsplinePoints[i][1]);
+            points3D[i][2] = Math.sin(2 * Math.PI * bsplinePoints[i][0] / width) * radius;
+        }
+        return points3D;
+    }else{
+
+    }
 }

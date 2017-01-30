@@ -126,6 +126,7 @@ AFRAME.registerComponent('testing', {
       }
       this.msPaintVR = new MSPaintVR(options)
       this.msPaintVR.init();
+      this.msPaintVR.login();
       console.log(this.msPaintVR);
     }
 
