@@ -29,58 +29,100 @@
     <script src="https://use.fontawesome.com/9e19aba51c.js"></script>
     <meta charset="UTF-8">
 
-<style type="text/css">
-          body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #f7b32b;
-          }
-          .size1 {
+    <style type="text/css">
+        nav {
+            box-shadow: 5px 4px 5px #000;
+        }
+        body {
+            font-family: 'PT Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #4f5d6e;
+            position: relative;
+            background: rgb(26, 49, 95);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(26, 49, 95, 1)), color-stop(10%, rgba(26, 49, 95, 1)), color-stop(24%, rgba(29, 108, 141, 1)), color-stop(37%, rgba(41, 136, 151, 1)), color-stop(77%, rgba(39, 45, 100, 1)), color-stop(90%, rgba(26, 49, 95, 1)), color-stop(100%, rgba(26, 49, 95, 1)));
+            filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#1a315f', endColorstr='#1a315f', GradientType=0);
+        }
+        .size1 {
             font-size: 50%;
             padding-bottom: 4px;
-          }
-          .size2 {
+        }
+        .size2 {
             font-size: 75%;
             padding-bottom: 4px;
-          }
-          .size3 {
+        }
+        .size3 {
             font-size: 100%;
             padding-bottom: 4px;
-          }
-          .size4 {
+        }
+        .size4 {
             font-size: 125%;
             padding-bottom: 4px;
-          }
-          .size5 {
+        }
+        .size5 {
             font-size: 150%;
             padding-bottom: 4px;
-          }
-          .col-centered {
+        }
+        .col-centered {
             float: none;
             margin: 0 auto;
-          }
-          .panel {
+        }
+        .panel {
             margin: 30 auto;
             height: 530px;
-          }
-          .btn {
-        	border-radius: 0px;
-            background: #2d1e2f;
-          }    
-        .btn #shareOptions {
-            
         }
-
+        .btn {
+            border-radius: 0px;
+            background: #2d1e2f;
+        }    
+        .btn #shareOptions {
+        }
+        img.logo{
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 
 <body>
     <div>
         <div class="col-centered col-sm-11">
-            <div class="row">
-                <div class="col-sm-12 col-centered text-center">
-                    <h1> Paint The World </h1>
+
+            <!--Space between canvas and top of document. Required to seperate nav bar from canvas-->
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <!--Nav bar and branding-->
+            <nav class="navbar navbar-inverse navbar-fixed-top" style="border-radius:0">
+                <div class="container-fluid">
+                    <!--<div class="nav navbar-nav" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><button type="button" id="slow" class="btn btn-primary btn-lg round">Test &nbsp <i class="fa fa-angle-right" aria-hidden="true"></i></button></li>
+                            <li><button type="button" id="medium" class="btn btn-primary btn-lg round">Test &nbsp <i class="fa fa-angle-double-right" aria-hidden="true"></i></button></li>
+                            <li><button type="button" id="fast" class="btn btn-primary btn-lg round">Test &nbsp <i class="fa fa-fast-forward" aria-hidden="true"></i></button></li>
+                        </ul>
+                    </div>-->
                 </div>
-            </div>
+            </nav>
+
+            <!--Just branding-->
+            <nav class="navbar navbar-default">
+                <div class="container-fluid col-sm-13">
+                    <div class="navbar-header">
+                        <a class="navbar-brand">
+                            <i class="fa fa-paint-brush fa-2x fa-spin" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <div class="col-sm-1 col-centered">
+                        <center><img src="logo.png" class="logo col-centered"></center>
+                        <center class="col-centered">Paint the World</center>
+                    </div>
+                </div>
+                <br>
+            </nav>
+
             <!-- Stores the literallycanvas canvas -->
             <div class="row">
                 <div class="col-lg-12 col-centered" id="canvasArea">
@@ -99,7 +141,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -171,9 +212,13 @@
         });
 
     </script>
-<script src="js/msPaintvr.js"></script>
-<script src="js/drawingCanvas.js" type="text/javascript"></script>
+
+    <script src="js/msPaintvr.js"></script>
+    <script src="js/drawingCanvas.js" type="text/javascript"></script>
 
 </body>
 
 </html>
+
+
+    <!--<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>-->
