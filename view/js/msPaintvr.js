@@ -33,10 +33,17 @@ function MSPaintVR(options) {
     if(options.vrButton){
         this.vrButton = options.vrButton;
     }
+    if(options.editLink){
+        this.editLink = options.editLink;
+    }
 }
 
 MSPaintVR.prototype.showShare = function(){
     this.shareDiv.innerHTML = 'View in VR: ' + window.location.href + '/view/?did=' + this.drawingId;
+}
+MSPaintVR.prototype.showEditLink = function(){
+    //TODO: Replace with acutal URL
+    this.editLink.innerHTML = 'https://pascalrascal.github.io/ptw/?did=' + this.drawingId;
 }
 MSPaintVR.prototype.init = function () {
     //Initiate Authentication and Database
@@ -82,7 +89,6 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.shapes2D = this.painting.child('shapes2D');
     }else{
         localStorage.setItem('did', drawingId);
-
         this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
@@ -90,6 +96,9 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.shapes2D = this.painting.child('shapes2D');
         console.log(this.uid);
 
+    }
+    if(this.editLink){
+        this.showEditLink();
     }
 
     if(this.vrButton){

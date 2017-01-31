@@ -62,6 +62,18 @@ AFRAME.registerComponent('testing', {
     console.log('initiated');
     sceneEl.addEventListener('render-target-loaded', this.do_update.bind(this));
     sceneEl.addEventListener('render-target-loaded', this.addlisteners.bind(this));
+          var edit = document.getElementById('editLink');
+      firebaseInit = true;
+      console.log('Entered VR');
+      var options = {
+        did: 300,
+        meme: 'fuckOff',
+        meshLineMaker: this,
+        editLink: edit
+      }
+      this.msPaintVR = new MSPaintVR(options)
+      this.msPaintVR.init();
+      this.msPaintVR.login();
 
 
 
@@ -114,7 +126,7 @@ AFRAME.registerComponent('testing', {
 
   },
   tick(t, deltaT) {
-    while(this.uninitiatedDrawingLines.length != 0){
+    if(this.uninitiatedDrawingLines.length != 0 && enteredVR){
       var lmesh = this.uninitiatedDrawingLines.pop();
       lmesh.initiateLine();
       this.drawingLines.push(lmesh);
@@ -124,18 +136,6 @@ AFRAME.registerComponent('testing', {
         this.drawingLines[i].drawShapeComplete(deltaT);
 
       }  
-    }
-    if(enteredVR && !firebaseInit){
-      firebaseInit = true;
-      console.log('Entered VR');
-      var options = {
-        did: 300,
-        meme: 'fuckOff',
-        meshLineMaker: this
-      }
-      this.msPaintVR = new MSPaintVR(options)
-      this.msPaintVR.init();
-      this.msPaintVR.login();
     }
 
 

@@ -1,5 +1,5 @@
 var scene = document.querySelector('a-scene');
-
+var theDrawingId;
 scene.addEventListener('loaded', function(){
   var sceneVRButton = document.querySelector('.a-enter-vr-button').style.opacity = 0;
         // Create WebVR UI Enter VR Button
@@ -36,4 +36,14 @@ scene.addEventListener('loaded', function(){
     document.getElementById("fullscreenLads").addEventListener('click', function(){
       enterVR.requestEnterFullscreen();
     })
+    theDrawingId = findGetParameter('did');
+    if(!dId){
+        theDrawingId = randId();
+    }else{
+
+    }
+    //REPLACE THIS FOR RELEVANT WEBSITE
+    var url = 'some url this is the id ' + dId;
+    document.getElementById('editLink').innerHTML = dId;
 })
+
