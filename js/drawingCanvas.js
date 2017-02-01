@@ -63,18 +63,19 @@ $(document).ready(function () {
     };
 
     var removeShape = function (lc, udid) {
-        var shapes = lc.shapes;
-        var shapeRemoved = false;
-        for (var i = 0; i < lc.shapes.length && !shapeRemoved; i++) {
-            if (lc.shapes[i].id == udid) {
-                lc.shapes.remove(i);
-                shapeRemoved = true;
-                console.log("Shaped Loaded!");
-            }
-        }
-        if(shapeRemoved){
-            lc.loadSnapshot(lc.getSnapshot())
-        }
+        console.log("remove shape");
+        // var shapes = lc.shapes;
+        // var shapeRemoved = false;
+        // for (var i = 0; i < lc.shapes.length && !shapeRemoved; i++) {
+        //     if (lc.shapes[i].id == udid) {
+        //         lc.shapes.remove(i);
+        //         shapeRemoved = true;
+        //         console.log("Shaped Loaded!");
+        //     }
+        // }
+        // if(shapeRemoved){
+        //     lc.loadSnapshot(lc.getSnapshot())
+        // }
     }
     var randId = function() {
     return Math.random().toString(36).substr(2, 8);
