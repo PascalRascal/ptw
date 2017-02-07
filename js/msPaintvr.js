@@ -41,14 +41,14 @@ function MSPaintVR(options) {
 }
 
 MSPaintVR.prototype.showViewLink = function(){
-    this.viewLink.setAttribute('href', 'https://painttheworld.github.io/view/?did=' + this.drawingId);
-    this.viewLink.innerHTML = 'https://painttheworld.github.io/view/?did=' + this.drawingId;
+    this.viewLink.setAttribute('href', 'https://pascalrascal.github.io/ptw/view/?did=' + this.drawingId);
+    this.viewLink.innerHTML = 'https://pascalrascal.github.io/ptw/view/?did=' + this.drawingId;
 
 }
 MSPaintVR.prototype.showEditLink = function(){
     //TODO: Replace with acutal URL
-    this.editLink.setAttribute('href', 'https://painttheworld.github.io/?did=' + this.drawingId);
-    this.editLink.innerHTML = 'https://painttheworld.github.io/?did=' + this.drawingId;
+    this.editLink.setAttribute('href', 'https://pascalrascal.github.io/ptw/?did=' + this.drawingId);
+    this.editLink.innerHTML = 'https://pascalrascal.github.io/ptw/?did=' + this.drawingId;
 }
 MSPaintVR.prototype.init = function () {
     //Initiate Authentication and Database
@@ -109,7 +109,7 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
     }
 
     if(this.vrButton){
-         this.vrButton.setAttribute('href', 'https://painttheworld.github.io/view/?did=' + this.drawingId);
+         this.vrButton.setAttribute('href', 'https://pascalrascal.github.io/ptw/view/?did=' + this.drawingId);
          this.vrButton.classList = 'btn btn-primary btn-lg btn-block';   
     }
 
