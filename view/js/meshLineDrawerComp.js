@@ -197,6 +197,11 @@ function DrawingLine(drawingData, object3D, options) {
   this.xShift = 10;
   this.yShift = 150;
   this.sphereDone = false;
+  /**
+   * inCardboard is a quick n dirty global i threw together in webvr-polyfill, if this is breaking its because
+   * some1 mucked aobut in there or something
+   */
+  
 
   this.sphereRadius = 2 + Math.random() * 4;
   this.sphereTimeToComplete = 3 + Math.random() * 7;
@@ -205,7 +210,11 @@ function DrawingLine(drawingData, object3D, options) {
 }
 
   DrawingLine.prototype.do_update = function () {
-
+    if(document.getElementById('aframeScene').isMobile && inCardboard){
+    console.log("da world of da cardboard!");
+    //Up the resolution
+    this.resolution.multiplyScalar(4);
+  }
     var canvas = this.el.sceneEl.canvas;
     this.resolution.set(canvas.width, canvas.height);
 
