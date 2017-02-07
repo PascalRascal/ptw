@@ -30,12 +30,12 @@ AFRAME.registerComponent('testing', {
     var aSky = document.querySelector('a-sky');
     var color = findGetParameter('clr');
     console.log(color);
-    if(color){
+    if (color) {
       console.log('Changing the color!');
       aSky.setAttribute('color', '#' + color);
     }
     var imgSrc = findGetParameter('src');
-    if(imgSrc){
+    if (imgSrc) {
       aSky.setAttribute('src', imgSrc);
     }
     console.log("Initiated meshline!");
@@ -62,30 +62,30 @@ AFRAME.registerComponent('testing', {
     console.log('initiated');
     sceneEl.addEventListener('render-target-loaded', this.do_update.bind(this));
     sceneEl.addEventListener('render-target-loaded', this.addlisteners.bind(this));
-          var edit = document.getElementById('editLink');
-      firebaseInit = true;
-      console.log('Entered VR');
-      var options = {
-        meshLineMaker: this,
-        editLink: edit
-      }
-      this.msPaintVR = new MSPaintVR(options)
-      this.msPaintVR.init();
-      this.msPaintVR.login();
+    var edit = document.getElementById('editLink');
+    firebaseInit = true;
+    console.log('Entered VR');
+    var options = {
+      meshLineMaker: this,
+      editLink: edit
+    }
+    this.msPaintVR = new MSPaintVR(options)
+    this.msPaintVR.init();
+    this.msPaintVR.login();
 
 
 
 
   },
 
-  createMeshLine: function(strokeData, color, lineWidth){
+  createMeshLine: function (strokeData, color, lineWidth) {
     var options = {};
     options.color = color;
     options.lineWidth = lineWidth;
     this.uninitiatedDrawingLines.push(new DrawingLine(strokeData, this.el, options));
   },
-  removeLine: function(id){
-    
+  removeLine: function (id) {
+
   },
 
   addlisteners: function () {
@@ -113,23 +113,23 @@ AFRAME.registerComponent('testing', {
     //cannot use canvas here because it is not created yet at init time
     console.log(this.resolution);
     if (!this.lineInitated) {
-      for(var i = 0; i < this.drawingLines.length; i++){
+      for (var i = 0; i < this.drawingLines.length; i++) {
         this.drawingLines[i].initiateLine();
       }
     }
   },
   tick(t, deltaT) {
-    if(this.uninitiatedDrawingLines.length != 0 && enteredVR){
+    if (this.uninitiatedDrawingLines.length != 0 && enteredVR) {
       var lmesh = this.uninitiatedDrawingLines.pop();
       lmesh.do_update();
       lmesh.initiateLine();
       this.drawingLines.push(lmesh);
     }
     if (this.state == 'waiting') {
-      for(var i = 0; i < this.drawingLines.length; i++){
+      for (var i = 0; i < this.drawingLines.length; i++) {
         this.drawingLines[i].drawShapeComplete(deltaT);
 
-      }  
+      }
     }
 
 
@@ -138,25 +138,25 @@ AFRAME.registerComponent('testing', {
   remove: function () {
     this.el.removeObject3D('mesh');
   },
-  
+
 
 });
 
 AFRAME.registerComponent('testyo', {
-  init: function(){
+  init: function () {
     console.log('test Component')
   }
 })
 
 console.log('custom sky');
 AFRAME.registerComponent('customSky', {
-    init: function() {
-        console.log('REEE REEE');
-        console.log(this.el);
-    },
-    tick: function() {
-        console.log('??');
-    }
+  init: function () {
+    console.log('REEE REEE');
+    console.log(this.el);
+  },
+  tick: function () {
+    console.log('??');
+  }
 })
 
 console.log("Did I miss somethjing?");
@@ -197,11 +197,7 @@ function DrawingLine(drawingData, object3D, options) {
   this.xShift = 10;
   this.yShift = 150;
   this.sphereDone = false;
-  /**
-   * inCardboard is a quick n dirty global i threw together in webvr-polyfill, if this is breaking its because
-   * some1 mucked aobut in there or something
-   */
-  
+
 
   this.sphereRadius = 2 + Math.random() * 4;
   this.sphereTimeToComplete = 3 + Math.random() * 7;
@@ -209,20 +205,26 @@ function DrawingLine(drawingData, object3D, options) {
 
 }
 
-  DrawingLine.prototype.do_update = function () {
-    if(document.getElementById('aframeScene').isMobile && inCardboard){
+DrawingLine.prototype.do_update = function () {
+  var canvas = this.el.sceneEl.canvas;
+  /**
+  * inCardboard is a quick n dirty global i threw together in webvr-polyfill, if this is breaking its because
+  * some1 mucked aobut in there or something
+  */
+
+  if (document.getElementById('aframeScene').isMobile && inCardboard) {
     console.log("da world of da cardboard!");
     //Up the resolution
-    this.resolution.multiplyScalar(4);
-  }
-    var canvas = this.el.sceneEl.canvas;
+    this.resolution.set(canvas.width * 0.5, canvas.height * 0.5);
+  } else {
     this.resolution.set(canvas.width, canvas.height);
-
   }
+
+}
 
 DrawingLine.prototype.initiateLine = function () {
-  
-  
+
+
   var material = new MeshLineMaterial({
     color: new THREE.Color(this.color),
     resolution: this.resolution,
@@ -328,7 +330,7 @@ DrawingLine.prototype.wander = function () {
  * Traces out a sphere with the radius, needs deltaT (time between calls);
  */
 DrawingLine.prototype.traceSphere = function (time, radius, timeToComplete, spirals) {
-  this.sphereTimeTrack +=  time / 10000;
+  this.sphereTimeTrack += time / 10000;
   if (this.sphereTimeTrack > 1 || this.sphereTimeTrack < -1) {
     this.sphereDone = true;
   }
@@ -347,7 +349,7 @@ DrawingLine.prototype.traceSphere = function (time, radius, timeToComplete, spir
 /**
  * Move the head of the line to the first position of its shape
  */
-DrawingLine.prototype.firstShapePosition = function(){
+DrawingLine.prototype.firstShapePosition = function () {
   var timeToComplete = 10000 + Math.floor(Math.random() * 10000);
   var easings = [
     TWEEN.Easing.Quartic.In,
@@ -368,16 +370,16 @@ DrawingLine.prototype.firstShapePosition = function(){
   this.linePosition.isDoneZ = false;
 
   var newX = this.drawingData[this.index][0];
-    var newY = this.drawingData[this.index][1];
-    var newZ = this.drawingData[this.index][2];
+  var newY = this.drawingData[this.index][1];
+  var newZ = this.drawingData[this.index][2];
   this.tweenX
-    .to({ x: newX}, timeToComplete)
+    .to({ x: newX }, timeToComplete)
     .easing(easingX)
     .onComplete(function () {
       this.isDoneX = true;
     });
   this.tweenY
-    .to({ y: newY}, timeToComplete)
+    .to({ y: newY }, timeToComplete)
     .easing(easingY)
     .onComplete(function () {
       this.isDoneY = true;
@@ -395,33 +397,33 @@ DrawingLine.prototype.firstShapePosition = function(){
 
 }
 
-DrawingLine.prototype.drawShape = function(){
+DrawingLine.prototype.drawShape = function () {
   var length = 800;
   var radius = length / (2 * Math.PI)
-  if(this.index >= this.drawingData.length){
+  if (this.index >= this.drawingData.length) {
 
-  }else{
+  } else {
     var newX = this.drawingData[this.index][0];
     var newY = this.drawingData[this.index][1];
     var newZ = this.drawingData[this.index][2];
     this.index++;
     this.linePosition.set(newX, newY, newZ);
-    
+
   }
 }
 
-DrawingLine.prototype.drawShapeComplete = function(deltaT) {
-  if(this.linePosition.isDoneX && this.linePosition.isDoneY && this.linePosition.isDoneZ){
+DrawingLine.prototype.drawShapeComplete = function (deltaT) {
+  if (this.linePosition.isDoneX && this.linePosition.isDoneY && this.linePosition.isDoneZ) {
     this.drawShape();
   }
-  else if(!this.sphereDone && false){
+  else if (!this.sphereDone && false) {
     this.traceSphere(deltaT, this.sphereRadius, this.sphereTimeToComplete, this.sphereRings);
   }
-  else if(!this.linePosition.isMovingToPosition){
+  else if (!this.linePosition.isMovingToPosition) {
     this.linePosition.isMovingToPosition = true;
     this.firstShapePosition();
   }
-  if(this.index < this.drawingData.length){
+  if (this.index < this.drawingData.length) {
     this.line.advance(this.linePosition);
   }
 
@@ -438,15 +440,15 @@ DrawingLine.prototype.remove = function () {
 http://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript
 **/
 //what am i gonna do? parse the string myslef? LMFAO
-var findGetParameter = function(parameterName) {
-    var result = null,
-        tmp = [];
-    location.search
-        .substr(1)
-        .split("&")
-        .forEach(function (item) {
-            tmp = item.split("=");
-            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-        });
-    return result;
+var findGetParameter = function (parameterName) {
+  var result = null,
+    tmp = [];
+  location.search
+    .substr(1)
+    .split("&")
+    .forEach(function (item) {
+      tmp = item.split("=");
+      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    });
+  return result;
 }
