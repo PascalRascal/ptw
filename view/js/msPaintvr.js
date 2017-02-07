@@ -7,7 +7,6 @@ function MSPaintVR(options) {
     this.drawingId = null;
     if(did){
         this.drawingId = did;
-        console.log('did lads');
     }else{
         
     }
@@ -36,14 +35,20 @@ function MSPaintVR(options) {
     if(options.editLink){
         this.editLink = options.editLink;
     }
+    if(options.viewLink){
+        this.viewLink = options.viewLink;
+    }
 }
 
-MSPaintVR.prototype.showShare = function(){
-    this.shareDiv.innerHTML = 'View in VR: ' + window.location.href + '/view/?did=' + this.drawingId;
+MSPaintVR.prototype.showViewLink = function(){
+    this.viewLink.setAttribute('href', 'https://painttheworld.github.io/view/?did=' + this.drawingId);
+    this.viewLink.innerHTML = 'https://painttheworld.github.io/view/?did=' + this.drawingId;
+
 }
 MSPaintVR.prototype.showEditLink = function(){
     //TODO: Replace with acutal URL
-    this.editLink.innerHTML = 'https://pascalrascal.github.io/ptw/?did=' + this.drawingId;
+    this.editLink.setAttribute('href', 'https://painttheworld.github.io/?did=' + this.drawingId);
+    this.editLink.innerHTML = 'https://painttheworld.github.io/?did=' + this.drawingId;
 }
 MSPaintVR.prototype.init = function () {
     //Initiate Authentication and Database
@@ -80,7 +85,6 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         console.log('Getting new id!');
         this.drawingId = randId();
         localStorage.setItem('did', this.did);
-        this.showShare();
         this.painting = this.db.child('paintings').child(this.drawingId);
         this.painting.child('title').set('Untitled Work');
         this.painting.child('author').set('Anonymous');
@@ -88,21 +92,25 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
         this.painting.child('uid').set(this.uid);
         this.shapes2D = this.painting.child('shapes2D');
     }else{
+        if(drawingId.toString == 'undefined'){
+            drawingId = randId();
+        }
         localStorage.setItem('did', drawingId);
-        this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
         this.author = this.painting.child('author');
         this.shapes2D = this.painting.child('shapes2D');
-        console.log(this.uid);
 
     }
     if(this.editLink){
         this.showEditLink();
     }
+    if(this.viewLink){
+        this.showViewLink();
+    }
 
     if(this.vrButton){
-         this.vrButton.setAttribute('href', '/view/?did=' + this.drawingId);
+         this.vrButton.setAttribute('href', 'https://painttheworld.github.io/view/?did=' + this.drawingId);
          this.vrButton.classList = 'btn btn-primary btn-lg btn-block';   
     }
 
@@ -117,7 +125,7 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
 }
 MSPaintVR.prototype.login = function () {
     this.auth.signInAnonymously().catch(function (error) {
-        console.log("errOR");
+        console.log(reason);
     });
 }
 /**

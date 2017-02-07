@@ -14,6 +14,7 @@ scene.addEventListener('loaded', function(){
                 console.log("enter VR")
             })
             .on("exit", function(){
+                enteredVR = false;
                 console.log("exit VR");
             })
             .on("error", function(error){
@@ -37,13 +38,10 @@ scene.addEventListener('loaded', function(){
       enterVR.requestEnterFullscreen();
     })
     theDrawingId = findGetParameter('did');
-    if(!dId){
+    if(!theDrawingId){
         theDrawingId = randId();
     }else{
 
     }
-    //REPLACE THIS FOR RELEVANT WEBSITE
-    var url = 'some url this is the id ' + dId;
-    document.getElementById('editLink').innerHTML = dId;
 })
 

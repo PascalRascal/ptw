@@ -66,8 +66,6 @@ AFRAME.registerComponent('testing', {
       firebaseInit = true;
       console.log('Entered VR');
       var options = {
-        did: 300,
-        meme: 'fuckOff',
         meshLineMaker: this,
         editLink: edit
       }
@@ -119,15 +117,11 @@ AFRAME.registerComponent('testing', {
         this.drawingLines[i].initiateLine();
       }
     }
-    this.index = 0;
-    this.velocity = new THREE.Vector3(-1, -2, 1);
-
-
-
   },
   tick(t, deltaT) {
     if(this.uninitiatedDrawingLines.length != 0 && enteredVR){
       var lmesh = this.uninitiatedDrawingLines.pop();
+      lmesh.do_update();
       lmesh.initiateLine();
       this.drawingLines.push(lmesh);
     }
@@ -209,6 +203,13 @@ function DrawingLine(drawingData, object3D, options) {
   this.sphereRings = Math.random() * 30;
 
 }
+
+  DrawingLine.prototype.do_update = function () {
+
+    var canvas = this.el.sceneEl.canvas;
+    this.resolution.set(canvas.width, canvas.height);
+
+  }
 
 DrawingLine.prototype.initiateLine = function () {
   

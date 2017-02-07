@@ -9,7 +9,6 @@
     <title>Paint the World</title>
     <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
     <script>
-        console.log('yo my man');
         // Initialize Firebase
         // TODO: Replace with your project's customized code snippet
         var config = {
@@ -130,7 +129,6 @@
                 <div class="container-fluid col-sm-13">
                     <div class="navbar-header">
                         <a class="navbar-brand">
-                            <i class="fa fa-paint-brush fa-2x fa-spin" aria-hidden="true"></i>
                         </a>
                     </div>
                     <div class="col-sm-1 col-centered">
@@ -145,14 +143,21 @@
             <div class="row">
                 <div class="col-lg-12 col-centered" id="canvasArea">
                     <div class="literally"></div>
+                    
 
-                    <button id="viewInVR" href="ptw/view/" class="btn btn-primary btn-lg btn-block">View in VR</button>
+                    <a id="viewInVR" href="view/" class="btn btn-primary btn-lg btn-block">View in VR</a>
                     <button data-toggle="collapse" data-target="#sharePanel" aria-expanded="false" aria-controls="sharePanel" id="shareOptions" class="btn btn-primary btn-lg btn-block">Share</button>
                     <div class="panel-group row">
                         <div class="collapse collapse-well" id="sharePanel">
                             <div class="well sharePanel">
-                                <p>Testing panel</p>
+                                <p>Link for your Friends to View: </p>
+                                <a id="viewLink">Viewing</a>
                             </div>
+                            <div class="well sharePanel">
+                                <p>Link for your Friends to Edit: </p>
+                                <a id="editLink">Editing</a>
+                            </div>
+
                         </div>
                     </div>
                 </div>

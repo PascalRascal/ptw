@@ -3,10 +3,10 @@ function MSPaintVR(options) {
     this.auth = firebase.auth();
     this.db = firebase.database();
     var did = findGetParameter('did');
+    this.uid = null;
     this.drawingId = null;
     if(did){
         this.drawingId = did;
-        console.log('did lads');
     }else{
         
     }
@@ -32,10 +32,23 @@ function MSPaintVR(options) {
     if(options.vrButton){
         this.vrButton = options.vrButton;
     }
+    if(options.editLink){
+        this.editLink = options.editLink;
+    }
+    if(options.viewLink){
+        this.viewLink = options.viewLink;
+    }
 }
 
-MSPaintVR.prototype.showShare = function(){
-    this.shareDiv.innerHTML = 'View in VR: ' + window.location.href + 'ptw/view/?did=' + this.drawingId;
+MSPaintVR.prototype.showViewLink = function(){
+    this.viewLink.setAttribute('href', 'https://painttheworld.github.io/view/?did=' + this.drawingId);
+    this.viewLink.innerHTML = 'https://painttheworld.github.io/view/?did=' + this.drawingId;
+
+}
+MSPaintVR.prototype.showEditLink = function(){
+    //TODO: Replace with acutal URL
+    this.editLink.setAttribute('href', 'https://painttheworld.github.io/?did=' + this.drawingId);
+    this.editLink.innerHTML = 'https://painttheworld.github.io/?did=' + this.drawingId;
 }
 MSPaintVR.prototype.init = function () {
     //Initiate Authentication and Database
@@ -60,9 +73,8 @@ MSPaintVR.prototype.init = function () {
 
 }
 MSPaintVR.prototype.setUID = function(user){
-    if(user && !this.uid){
+    if(user){
         this.uid = user.uid
-        console.log(this.uid);
         this.setDrawing(this.drawingId);
     } else{
         this.uid = null;
@@ -70,32 +82,34 @@ MSPaintVR.prototype.setUID = function(user){
 }
 MSPaintVR.prototype.setDrawing = function(drawingId) {
     if(!drawingId){
-        console.log('Getting new id!');
         this.drawingId = randId();
         localStorage.setItem('did', this.did);
-        this.showShare();
         this.painting = this.db.child('paintings').child(this.drawingId);
         this.painting.child('title').set('Untitled Work');
-        this.painting.child('artist').set('Anonymous');
+        this.painting.child('author').set('Anonymous');
         this.painting.child('editable').set(false);
         this.painting.child('uid').set(this.uid);
         this.shapes2D = this.painting.child('shapes2D');
     }else{
-        console.log('Uinsg old one!');
+        if(drawingId.toString == 'undefined'){
+            drawingId = randId();
+        }
         localStorage.setItem('did', drawingId);
-        this.drawingId = drawingId;
-        this.showShare();
         this.painting = this.db.child('paintings').child(drawingId);
         this.title = this.painting.child('title');
-        this.author = this.painting.child('artist');
+        this.author = this.painting.child('author');
         this.shapes2D = this.painting.child('shapes2D');
-        console.log(this.uid);
+
+    }
+    if(this.editLink){
+        this.showEditLink();
+    }
+    if(this.viewLink){
+        this.showViewLink();
     }
 
-
     if(this.vrButton){
-        console.log('PLZ WORK IM BEGGING U');
-         this.vrButton.setAttribute('href', 'https://pascalrascal.github.io/ptw/view/?did=' + this.drawingId);
+         this.vrButton.setAttribute('href', 'https://painttheworld.github.io/view/?did=' + this.drawingId);
          this.vrButton.classList = 'btn btn-primary btn-lg btn-block';   
     }
 
@@ -110,16 +124,8 @@ MSPaintVR.prototype.setDrawing = function(drawingId) {
 }
 MSPaintVR.prototype.login = function () {
     this.auth.signInAnonymously().catch(function (error) {
-        console.log("errOR");
+        console.log(reason);
     });
-}
-
-MSPaintVR.prototype.setTitle = function (title){
-    return this.painting.child('title').set(title);
-}
-
-MSPaintVR.prototype.setAuthor = function(artist){
-    return this.painting.child('artist').set(artist);
 }
 /**
  * 
@@ -157,7 +163,6 @@ MSPaintVR.prototype.draw2DShape = function (s) {
     p1.then(function (shape) {
         var memeShape = LC.createShape('LinePath', { points: shape });
         lc.saveShape(memeShape, false);
-        console.log("Shape Saved");
     })
     p1.catch(function (reason) {
         console.log(reason);
@@ -237,7 +242,7 @@ var generate3DPoints = function (points, maxWidth, maxHeight) {
         var points3D = [];
         var spline = new BSpline(points,3);
         var bsplinePoints = [];
-        for(var i = 0; i <= 1; i+= 1/(points.length * 2)){
+        for(var i = 0; i <= 1; i+= 1/(points.length * 4)){
             bsplinePoints.push(spline.calcAt(i));
         }
 

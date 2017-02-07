@@ -5,7 +5,9 @@ $(document).ready(function () {
     var drawingIdDiv = document.createElement('div');
     var options = {
         shareDiv: document.getElementById("shareDiv"),
-        vrButton: document.getElementById("viewInVR")
+        vrButton: document.getElementById("viewInVR"),
+        editLink: document.getElementById("editLink"),
+        viewLink: document.getElementById("viewLink")
     }
     options.lCanvas = lc;
     app = new MSPaintVR(options);
@@ -46,13 +48,12 @@ $(document).ready(function () {
     
         app.push2DShape(shapeData).then(function () {
             
-            removeShape(lc, shape.id);
+            //removeShape(lc, shape.id);
         }).catch(function(reason){
             console.log(reason);
-            removeShape(lc, shape.id);
+            //removeShape(lc, shape.id);
         });
         
-        console.log("shape ended");
     });
 
 });
